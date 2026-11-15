@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -23,6 +24,7 @@ const iconos: Record<ProductoCatalogo["icono"], keyof typeof Ionicons.glyphMap> 
 const CARRO_INICIAL = { cantidad: 3, total: 1240 };
 
 export default function VentasScreen() {
+  const router = useRouter();
   const [categoria, setCategoria] = useState<(typeof categorias)[number]>("Todos");
   const [carro, setCarro] = useState(CARRO_INICIAL);
 
@@ -129,7 +131,7 @@ export default function VentasScreen() {
             </ThemedText>
           </ThemedText>
         </View>
-        <Pressable style={styles.cobrarBtn}>
+        <Pressable style={styles.cobrarBtn} onPress={() => router.push("/cobrar")}>
           <Text style={styles.cobrarTexto}>COBRAR →</Text>
         </Pressable>
       </View>

@@ -43,6 +43,8 @@ export const statusColors: Record<string, { bg: string; text: string }> = {
   Entregado: { bg: "rgba(108,117,125,0.2)", text: "#9CA3AF" },
   Aprobado: { bg: "rgba(40,167,69,0.2)", text: "#28A745" },
   Alerta: { bg: "rgba(239,68,68,0.2)", text: "#F87171" },
+  Recibido: { bg: "rgba(40,167,69,0.2)", text: "#28A745" },
+  "En tránsito": { bg: "rgba(59,130,246,0.2)", text: "#60A5FA" },
 };
 
 export const radius = {

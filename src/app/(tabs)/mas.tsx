@@ -13,6 +13,14 @@ const rutasModulos: Record<string, string> = {
   Taller: "/taller",
   Clientes: "/clientes",
   Productos: "/inventario",
+  "Órdenes de Compra": "/compras",
+  Proveedores: "/proveedores",
+  Empleados: "/empleados",
+  Usuarios: "/usuarios",
+  "Reportes de Ventas": "/reportes",
+  "Trade-in": "/tradein",
+  Bitácora: "/bitacora",
+  "Mantenimiento de BD": "/bd",
 };
 
 export default function MasScreen() {

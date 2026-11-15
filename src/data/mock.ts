@@ -173,6 +173,129 @@ export const menuModulos: ModuloMenu[] = [
   },
 ];
 
+/* ============================================================
+   DATOS NUEVOS — Compras, Proveedores, Empleados, Usuarios,
+   Reportes, Trade-in, Bitácora, BD y Cobro POS
+   ============================================================ */
+
+export type Compra = {
+  id: string;
+  proveedor: string;
+  resumen: string;
+  estado: "Recibido" | "En tránsito" | "Pendiente";
+  fecha: string;
+  total: string;
+};
+
+export const compras: Compra[] = [
+  { id: "OC-0221", proveedor: "Distribuidora PhoneParts", resumen: "12 items · Accesorios", estado: "En tránsito", fecha: "Hoy 08:40", total: "$12,450.00" },
+  { id: "OC-0220", proveedor: "Repuestos del Golfo", resumen: "8 items · Repuestos", estado: "Recibido", fecha: "Ayer 17:05", total: "$8,900.00" },
+  { id: "OC-0219", proveedor: "TechnoSupply SA", resumen: "5 items · Pantallas", estado: "Pendiente", fecha: "Ayer 11:30", total: "$15,200.00" },
+  { id: "OC-0218", proveedor: "Mobile Depot MX", resumen: "20 items · Fundas", estado: "Recibido", fecha: "12 Nov 09:15", total: "$4,850.00" },
+  { id: "OC-0217", proveedor: "GamaAccesorios", resumen: "30 items · Micas", estado: "Recibido", fecha: "11 Nov 14:50", total: "$3,800.00" },
+];
+
+export const proveedores = [
+  { id: "1", nombre: "Distribuidora PhoneParts MX", contacto: "Jorge Villalba", telefono: "+52 55 1100 2200", productos: 12, preferido: true, inicial: "D", color: colors.yellow, categoria: "Accesorios" },
+  { id: "2", nombre: "AccesoriosPro Internacional", contacto: "Ana Beltrán", telefono: "+52 55 2200 3300", productos: 24, preferido: false, inicial: "A", color: colors.blue, categoria: "Accesorios" },
+  { id: "3", nombre: "Repuestos del Golfo", contacto: "Miguel Cázares", telefono: "+52 81 4400 5500", productos: 9, preferido: false, inicial: "R", color: colors.green, categoria: "Refacciones" },
+  { id: "4", nombre: "TechnoSupply SA de CV", contacto: "Lucía Ferrer", telefono: "+52 33 6600 7700", productos: 7, preferido: true, inicial: "T", color: colors.cyan, categoria: "Refacciones" },
+  { id: "5", nombre: "Mobile Depot MX", contacto: "Diego Ocampo", telefono: "+52 55 8800 9900", productos: 18, preferido: false, inicial: "M", color: colors.orange, categoria: "Mayoreo" },
+  { id: "6", nombre: "GamaAccesorios", contacto: "Sara Leal", telefono: "+52 55 1212 3434", productos: 30, preferido: false, inicial: "G", color: colors.red, categoria: "Mayoreo" },
+];
+
+export const empleados = [
+  { id: "1", nombre: "David Sánchez", cargo: "Técnico Nivel 2", tipo: "Tecnico", especialidades: ["iPhone", "Samsung"], disponible: true },
+  { id: "2", nombre: "Paola Núñez", cargo: "Vendedora", tipo: "Vendedor", especialidades: ["Ventas"], disponible: true },
+  { id: "3", nombre: "Raúl Gómez", cargo: "Técnico Pantallas", tipo: "Tecnico", especialidades: ["iPhone", "iPad"], disponible: false },
+  { id: "4", nombre: "Fernanda Lima", cargo: "Cajera", tipo: "Vendedor", especialidades: ["Caja"], disponible: true },
+  { id: "5", nombre: "Miguel Torres", cargo: "Vendedor", tipo: "Vendedor", especialidades: ["Trade-in"], disponible: true },
+  { id: "6", nombre: "Carmen Ruiz", cargo: "Supervisora", tipo: "Admin", especialidades: ["Sucursal"], disponible: true },
+];
+
+export const usuarios = [
+  { id: "1", nombre: "Anthoan Gonzalez", email: "anthoan@ituaccesorio.com", rol: "Administrador", acceso: "hoy 09:12", activo: true, color: colors.yellow },
+  { id: "2", nombre: "Paola Núñez", email: "paola@ituaccesorio.com", rol: "Vendedor", acceso: "hoy 09:40", activo: true, color: colors.blue },
+  { id: "3", nombre: "David Sánchez", email: "david@ituaccesorio.com", rol: "Técnico", acceso: "hoy 08:05", activo: true, color: colors.green },
+  { id: "4", nombre: "Fernanda Lima", email: "fer@ituaccesorio.com", rol: "Vendedor", acceso: "ayer 18:22", activo: true, color: colors.blue },
+  { id: "5", nombre: "Carmen Ruiz", email: "carmen@ituaccesorio.com", rol: "Administrador", acceso: "ayer 16:50", activo: false, color: colors.yellow },
+  { id: "6", nombre: "Miguel Torres", email: "miguel@ituaccesorio.com", rol: "Técnico", acceso: "ayer 15:03", activo: true, color: colors.green },
+];
+
+export const permisosSistema = [
+  { id: "1", nombre: "Gestión de ventas", activo: true },
+  { id: "2", nombre: "Editar inventario", activo: true },
+  { id: "3", nombre: "Ver reportes", activo: false },
+  { id: "4", nombre: "Administrar usuarios", activo: false },
+];
+
+export const reportes = {
+  kpis: ([
+    { id: "1", label: "Ingresos", valor: "$45,200", color: colors.yellow, trend: "+12.4%", extra: "vs. $40,210 anterior" },
+    { id: "2", label: "Ventas", valor: "128", color: colors.text, trend: "+8.1%", extra: "Órdenes · 94% OK" },
+    { id: "3", label: "Ticket Prom.", valor: "$353", color: colors.blue, trend: "Prom.", extra: "+3 items x venta" },
+    { id: "4", label: "Meta Mensual", valor: "86%", color: colors.yellow, progress: 0.86, extra: "Obj. $52.5k · faltan 7 días" },
+  ]) as ({ id: string; label: string; valor: string; color: string; trend: string; extra: string; progress?: number })[],
+  dias: ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
+  ingresos: [55, 68, 75, 62, 82, 95, 48],
+  gastos: [28, 34, 40, 26, 42, 45, 22],
+  topProductos: [
+    { nombre: "Funda iPhone 13 Silicone", vendidos: 34 },
+    { nombre: "Mica Vidrio 9D Completo", vendidos: 28 },
+    { nombre: "Cable USB-C a Lightning 2m", vendidos: 22 },
+    { nombre: "Cargador Rápido 20W USB-C", vendidos: 15 },
+    { nombre: "Pop Socket Magnético Metálico", vendidos: 11 },
+  ],
+};
+
+export const tradein = {
+  dispositivo: {
+    nombre: "iPhone 12 64GB Azul",
+    imei: "356789104523891",
+    folio: "#TR-884",
+    condiciones: [
+      { label: "Pantalla: Bien", ok: true },
+      { label: "Cámara: Regular", ok: false },
+      { label: "Batería: 87%", ok: true },
+    ],
+  },
+  valuacion: { min: "$3,200", max: "$3,800", demanda: "Alta", margen: "32%", reventa: "$5,100" },
+  equipos: [
+    { id: "TR-881", dispositivo: "iPhone 11 128GB Negro", cliente: "Carlos Ramírez", inicial: "CR", color: colors.yellow, oferta: "$2,900", estado: "Pendiente" as const },
+    { id: "TR-880", dispositivo: "Samsung S21 128GB Gris", cliente: "Mariana Silva", inicial: "MS", color: colors.blue, oferta: "$3,150", estado: "Revisión" as const },
+    { id: "TR-879", dispositivo: "Xiaomi 12T 256GB Azul", cliente: "Luis Hernández", inicial: "LH", color: colors.green, oferta: "$2,400", estado: "Completado" as const },
+  ],
+};
+
+export const bitacora = [
+  { id: "1", accion: "Inició sesión", usuario: "Anthoan", hora: "Hoy 10:24:56", tipo: "Acceso", color: colors.green, icono: "log-in" },
+  { id: "2", accion: "Actualizó orden #OS-0142", usuario: "David S.", hora: "Hoy 10:02:11", tipo: "Cambios", color: colors.blue, icono: "create" },
+  { id: "3", accion: "Registró pago $850.00", usuario: "Paola N.", hora: "Hoy 09:47:38", tipo: "Cambios", color: colors.blue, icono: "cash" },
+  { id: "4", accion: "Eliminó producto SKU M-GEN", usuario: "Anthoan", hora: "Hoy 09:15:02", tipo: "Cambios", color: colors.red, icono: "trash" },
+  { id: "5", accion: "Backup automático completado", usuario: "Sistema", hora: "Hoy 08:45:00", tipo: "Sistema", color: colors.yellow, icono: "server" },
+  { id: "6", accion: "Creó cliente Ana Torres", usuario: "Paola N.", hora: "Ayer 17:31:19", tipo: "Cambios", color: colors.blue, icono: "person-add" },
+  { id: "7", accion: "Modificó permisos de usuario", usuario: "Anthoan", hora: "Ayer 16:12:45", tipo: "Sistema", color: colors.yellow, icono: "settings" },
+  { id: "8", accion: "Cerró sesión", usuario: "Miguel T.", hora: "Ayer 15:00:57", tipo: "Acceso", color: colors.gray, icono: "log-out" },
+];
+
+export const backups = {
+  ultima: { fecha: "Hoy 12:45 PM", hace: "hace 3 horas", tamaño: "4.8 MB" },
+  lista: [
+    { nombre: "backup_2026-11-14.sql", fecha: "14 Nov 12:45", tamaño: "4.8 MB" },
+    { nombre: "backup_2026-11-13.sql", fecha: "13 Nov 12:45", tamaño: "4.7 MB" },
+    { nombre: "backup_2026-11-12.sql", fecha: "12 Nov 12:45", tamaño: "4.7 MB" },
+    { nombre: "backup_2026-11-11.sql", fecha: "11 Nov 12:45", tamaño: "4.6 MB" },
+  ],
+  stats: { registros: "12,480", esquemas: "8", tablas: "34" },
+};
+
+export const carritoDemo = [
+  { id: "1", nombre: "Funda iPhone 13 Silicone", cantidad: 1, precio: 250 },
+  { id: "2", nombre: "Mica Vidrio 9H Pro", cantidad: 1, precio: 120 },
+  { id: "3", nombre: "Cable USB-C Reforzado 2m", cantidad: 1, precio: 180 },
+  { id: "4", nombre: "Cargador 20W Power Adapter", cantidad: 1, precio: 690 },
+];
+
 /** Credenciales de demostración (solo estético). */
 export const ADMIN_USER = "Admin";
 export const ADMIN_PASSWORD = "Admin1234";

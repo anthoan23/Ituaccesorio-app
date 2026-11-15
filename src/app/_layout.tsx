@@ -44,6 +44,15 @@ export default function RootLayout() {
         <Stack.Screen name="orden/[id]" />
         <Stack.Screen name="inventario" />
         <Stack.Screen name="clientes" />
+        <Stack.Screen name="compras" />
+        <Stack.Screen name="proveedores" />
+        <Stack.Screen name="empleados" />
+        <Stack.Screen name="usuarios" />
+        <Stack.Screen name="reportes" />
+        <Stack.Screen name="tradein" />
+        <Stack.Screen name="bitacora" />
+        <Stack.Screen name="bd" />
+        <Stack.Screen name="cobrar" />
       </Stack>
     </>
   );
