@@ -157,9 +157,13 @@ export const menuModulos: ModuloMenu[] = [
     seccion: "GESTIÓN",
     items: [
       { nombre: "Empleados", icono: "people", color: colors.green },
+      { nombre: "Especialidades", icono: "school", color: colors.cyan },
+      { nombre: "Cargos", icono: "id-card", color: colors.blue },
       { nombre: "Usuarios", icono: "person", color: colors.blue },
       { nombre: "Reportes de Ventas", icono: "stats", color: colors.yellow },
       { nombre: "Trade-in", icono: "swap", color: colors.orange },
+      { nombre: "Gestión Trade-in", icono: "repeat", color: colors.orange },
+      { nombre: "Validación de Pagos", icono: "cash", color: colors.yellow },
       { nombre: "Clientes", icono: "folder", color: colors.blue },
       { nombre: "Productos", icono: "archive", color: colors.green },
     ],
@@ -294,6 +298,79 @@ export const carritoDemo = [
   { id: "2", nombre: "Mica Vidrio 9H Pro", cantidad: 1, precio: 120 },
   { id: "3", nombre: "Cable USB-C Reforzado 2m", cantidad: 1, precio: 180 },
   { id: "4", nombre: "Cargador 20W Power Adapter", cantidad: 1, precio: 690 },
+];
+
+/* ============================================================
+   MÓDULOS FALTANTES — Entregas, Gestión Trade-in, Validación,
+   Especialidades y Cargos
+   ============================================================ */
+
+export type Entrega = {
+  id: string;
+  cliente: string;
+  direccion: string;
+  estado: "En ruta" | "Entregado" | "Pendiente";
+  hora: string;
+  monto: string;
+};
+
+export const entregas: Entrega[] = [
+  { id: "EN-0087", cliente: "María González", direccion: "Av. Insurgentes 245, Col. Centro", estado: "En ruta", hora: "10:30 - 11:00", monto: "$250.00" },
+  { id: "EN-0086", cliente: "Carlos Ramírez", direccion: "Calle Reforma 89, Col. Juárez", estado: "Entregado", hora: "09:15 - 09:45", monto: "$180.00" },
+  { id: "EN-0085", cliente: "Ana Torres", direccion: "Av. Principal 512, Col. Norte", estado: "Pendiente", hora: "11:00 - 11:30", monto: "$450.00" },
+  { id: "EN-0084", cliente: "Luis Hernández", direccion: "Calle Hidalgo 33, Col. Sur", estado: "En ruta", hora: "11:30 - 12:00", monto: "$120.00" },
+  { id: "EN-0083", cliente: "Sofía Mendoza", direccion: "Av. Zaragoza 1201, Col. Oriente", estado: "Entregado", hora: "08:40 - 09:10", monto: "$350.00" },
+];
+
+export const deliveryPersonal = [
+  { id: "1", nombre: "Luis Hernández", disponible: true },
+  { id: "2", nombre: "Pedro Sánchez", disponible: false },
+  { id: "3", nombre: "Jorge Morales", disponible: true },
+];
+
+export const equiposTradein = [
+  { id: "TR-881", dispositivo: "iPhone 11 128GB", cliente: "Carlos Ramírez", imei: "3567…810", pagado: "$2,900", estado: "Pendiente" as const },
+  { id: "TR-880", dispositivo: "Samsung S21 128GB", cliente: "Mariana Silva", imei: "3519…402", pagado: "$3,150", estado: "Revisión" as const },
+  { id: "TR-879", dispositivo: "iPad Air 4 64GB", cliente: "Luis Hernández", imei: "3532…227", pagado: "$1,800", estado: "Completado" as const },
+  { id: "TR-878", dispositivo: "Xiaomi 12T 256GB", cliente: "Ana Torres", imei: "8642…915", pagado: "$2,400", estado: "Completado" as const },
+  { id: "TR-877", dispositivo: "iPhone 12 mini", cliente: "Sofía Mendoza", imei: "3568…134", pagado: "$3,300", estado: "Revisión" as const },
+];
+
+export type PagoValidar = {
+  id: string;
+  monto: string;
+  cliente: string;
+  orden: string;
+  metodo: "Efectivo" | "Transferencia" | "Tarjeta";
+  fecha: string;
+  hora: string;
+  estado: "Pendiente" | "Validado" | "Rechazado";
+};
+
+export const pagosValidar: PagoValidar[] = [
+  { id: "PG-0341", monto: "$850.00", cliente: "María González", orden: "#OS-0142", metodo: "Efectivo", fecha: "Hoy", hora: "10:24", estado: "Pendiente" },
+  { id: "PG-0340", monto: "$1,200.00", cliente: "Carlos Méndez", orden: "#OS-0141", metodo: "Transferencia", fecha: "Hoy", hora: "09:47", estado: "Pendiente" },
+  { id: "PG-0339", monto: "$450.00", cliente: "Lucía Torres", orden: "#OS-0140", metodo: "Tarjeta", fecha: "Hoy", hora: "09:12", estado: "Pendiente" },
+  { id: "PG-0338", monto: "$2,100.00", cliente: "Alejandro Ruiz", orden: "#OS-0139", metodo: "Transferencia", fecha: "Hoy", hora: "08:55", estado: "Validado" },
+  { id: "PG-0337", monto: "$320.00", cliente: "Valeria Ramos", orden: "#OS-0138", metodo: "Efectivo", fecha: "Ayer", hora: "18:31", estado: "Rechazado" },
+];
+
+export const especialidades = [
+  { id: "1", nombre: "Reparación de Pantallas", descripcion: "LCD, OLED y digitalizadores", icono: "build", color: colors.yellow, tecnicos: 4 },
+  { id: "2", nombre: "Microsoldadura", descripcion: "Reparación de placa lógica", icono: "git-network", color: colors.blue, tecnicos: 2 },
+  { id: "3", nombre: "Cambio de Baterías", descripcion: "Diagnóstico y reemplazo", icono: "battery-half", color: colors.green, tecnicos: 3 },
+  { id: "4", nombre: "Recuperación de Datos", descripcion: "Respaldos y extracción", icono: "server", color: colors.cyan, tecnicos: 1 },
+  { id: "5", nombre: "Desbloqueo de Equipos", descripcion: "Software y cuentas", icono: "lock-open", color: colors.orange, tecnicos: 2 },
+  { id: "6", nombre: "Daño por Agua", descripcion: "Limpieza por ultrasonido", icono: "water", color: colors.red, tecnicos: 1 },
+];
+
+export const cargos = [
+  { id: "1", nombre: "Administrador", descripcion: "Control total del sistema", icono: "shield-checkmark", color: colors.yellow, activos: 1 },
+  { id: "2", nombre: "Supervisor", descripcion: "Supervisión de sucursal", icono: "star", color: colors.blue, activos: 1 },
+  { id: "3", nombre: "Técnico Nivel 2", descripcion: "Reparaciones avanzadas", icono: "construct", color: colors.green, activos: 3 },
+  { id: "4", nombre: "Vendedor", descripcion: "Atención en mostrador", icono: "pricetag", color: colors.cyan, activos: 2 },
+  { id: "5", nombre: "Cajero", descripcion: "Manejo de caja", icono: "cash", color: colors.orange, activos: 2 },
+  { id: "6", nombre: "Repartidor", descripcion: "Entregas a domicilio", icono: "car", color: colors.red, activos: 1 },
 ];
 
 /** Credenciales de demostración (solo estético). */

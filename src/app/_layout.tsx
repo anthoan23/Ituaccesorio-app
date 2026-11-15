@@ -53,6 +53,11 @@ export default function RootLayout() {
         <Stack.Screen name="bitacora" />
         <Stack.Screen name="bd" />
         <Stack.Screen name="cobrar" />
+        <Stack.Screen name="entregas" />
+        <Stack.Screen name="tradein-gestion" />
+        <Stack.Screen name="validacion" />
+        <Stack.Screen name="especialidades" />
+        <Stack.Screen name="cargos" />
       </Stack>
     </>
   );

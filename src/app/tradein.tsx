@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 import { GlassCard } from "@/components/glass-card";
@@ -11,8 +12,17 @@ import { tradein } from "@/data/mock";
 import { colors, fontFamily, radius } from "@/constants/theme";
 
 export default function TradeinScreen() {
+  const router = useRouter();
   const [vista, setVista] = useState<"Cotizar" | "Gestión">("Cotizar");
   const t = tradein;
+
+  const cambiarVista = (v: "Cotizar" | "Gestión") => {
+    if (v === "Gestión") {
+      router.push("/tradein-gestion");
+      return;
+    }
+    setVista(v);
+  };
 
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
@@ -22,7 +32,7 @@ export default function TradeinScreen() {
         {/* Tabs Cotizar / Gestión */}
         <View style={styles.tabs}>
           {(["Cotizar", "Gestión"] as const).map((tab) => (
-            <Pressable key={tab} style={[styles.tab, vista === tab && styles.tabActivo]} onPress={() => setVista(tab)}>
+            <Pressable key={tab} style={[styles.tab, vista === tab && styles.tabActivo]} onPress={() => cambiarVista(tab)}>
               <Ionicons name={tab === "Cotizar" ? "swap-horizontal" : "archive"} size={15} color={vista === tab ? colors.ink : colors.textSoft} />
               <Text style={[styles.tabTexto, vista === tab && styles.tabTextoActivo]}>{tab}</Text>
               {tab === "Gestión" && <View style={styles.tabPunto} />}
