@@ -373,6 +373,53 @@ export const cargos = [
   { id: "6", nombre: "Repartidor", descripcion: "Entregas a domicilio", icono: "car", color: colors.red, activos: 1 },
 ];
 
+/* ============================================================
+   RECEPCIÓN DE PROVEEDORES, NOTIFICACIONES Y PERFIL
+   ============================================================ */
+
+export type RecepcionOrden = {
+  id: string;
+  proveedor: string;
+  resumen: string;
+  estado: "Pendiente" | "En tránsito" | "Recibido";
+  fechaEsperada: string;
+};
+
+export const recepcionOrdenes: RecepcionOrden[] = [
+  { id: "OC-0221", proveedor: "Distribuidora PhoneParts", resumen: "12 items · Accesorios", estado: "En tránsito", fechaEsperada: "Hoy 16:00" },
+  { id: "OC-0219", proveedor: "TechnoSupply SA", resumen: "5 items · Pantallas", estado: "Pendiente", fechaEsperada: "Mañana 10:00" },
+  { id: "OC-0222", proveedor: "Mobile Depot MX", resumen: "20 items · Fundas", estado: "Pendiente", fechaEsperada: "Mañana 12:30" },
+  { id: "OC-0220", proveedor: "Repuestos del Golfo", resumen: "8 items · Repuestos", estado: "Recibido", fechaEsperada: "Hoy 09:15" },
+  { id: "OC-0218", proveedor: "GamaAccesorios", resumen: "30 items · Micas", estado: "Recibido", fechaEsperada: "Ayer 14:50" },
+];
+
+export type Notificacion = {
+  id: string;
+  titulo: string;
+  detalle: string;
+  hora: string;
+  tipo: "info" | "exito" | "alerta" | "error";
+  leida: boolean;
+};
+
+export const notificaciones: Notificacion[] = [
+  { id: "1", titulo: "Nueva orden #OS-0142", detalle: "María González · iPhone 13 · Pantalla", hora: "hace 5 min", tipo: "info", leida: false },
+  { id: "2", titulo: "Pago recibido $850.00", detalle: "Orden #OS-0142 · Efectivo en caja", hora: "hace 12 min", tipo: "exito", leida: false },
+  { id: "3", titulo: "Stock bajo", detalle: "Pantalla iPhone 12 · quedan 2 piezas", hora: "hace 40 min", tipo: "alerta", leida: false },
+  { id: "4", titulo: "Reparación completada", detalle: "Orden #OS-0139 · Alejandro Ruiz", hora: "hace 1 h", tipo: "exito", leida: true },
+  { id: "5", titulo: "Entrega en ruta", detalle: "#EN-0087 · María González · Luis H.", hora: "hace 2 h", tipo: "info", leida: true },
+  { id: "6", titulo: "Pago rechazado", detalle: "Orden #OS-0138 · $320.00 · verificar datos", hora: "ayer 18:35", tipo: "error", leida: true },
+  { id: "7", titulo: "Backup completado", detalle: "backup_2026-11-15.sql · 4.8 MB", hora: "ayer 12:45", tipo: "info", leida: true },
+];
+
+export const perfil = {
+  nombre: "Anthoan Gonzalez",
+  email: "anthoan@ituaccesorio.com",
+  telefono: "+52 55 1234 5678",
+  sucursal: "Centro",
+  rol: "Administrador",
+};
+
 /** Credenciales de demostración (solo estético). */
 export const ADMIN_USER = "Admin";
 export const ADMIN_PASSWORD = "Admin1234";

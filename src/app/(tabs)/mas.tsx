@@ -35,7 +35,7 @@ export default function MasScreen() {
     <SafeAreaView style={styles.safe} edges={["top"]}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Perfil */}
-        <View style={styles.perfilHeader}>
+        <Pressable style={styles.perfilHeader} onPress={() => router.push("/perfil" as never)}>
           <Avatar inicial="A" size={64} />
           <View style={styles.perfilInfo}>
             <View style={styles.perfilNombreRow}>
@@ -64,9 +64,15 @@ export default function MasScreen() {
                   Sucursal: Centro
                 </ThemedText>
               </View>
+              <View style={styles.metaChip}>
+                <Ionicons name="create" size={11} color={colors.yellow} />
+                <ThemedText type="label" style={[styles.metaTexto, { color: colors.yellow }]}>
+                  Editar perfil
+                </ThemedText>
+              </View>
             </View>
           </View>
-        </View>
+        </Pressable>
 
         {/* Métricas rápidas */}
         <View style={styles.statsRow}>

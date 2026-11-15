@@ -58,6 +58,8 @@ export default function RootLayout() {
         <Stack.Screen name="validacion" />
         <Stack.Screen name="especialidades" />
         <Stack.Screen name="cargos" />
+        <Stack.Screen name="notificaciones" />
+        <Stack.Screen name="perfil" />
       </Stack>
     </>
   );

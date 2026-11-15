@@ -35,10 +35,12 @@ export default function InicioScreen() {
             </ThemedText>
           </View>
           <View style={styles.headerDer}>
-            <View style={styles.campana}>
-              <Ionicons name="notifications" size={18} color={colors.textMuted} />
-              <View style={styles.campanaPunto} />
-            </View>
+            <Pressable hitSlop={8} onPress={() => router.push("/notificaciones" as never)}>
+              <View style={styles.campana}>
+                <Ionicons name="notifications" size={18} color={colors.textMuted} />
+                <View style={styles.campanaPunto} />
+              </View>
+            </Pressable>
             <Avatar inicial="A" size={40} />
           </View>
         </View>
