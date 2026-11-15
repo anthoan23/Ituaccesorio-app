@@ -3,34 +3,38 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 
-import { Avatar } from "@/components/avatar";
 import { Fab } from "@/components/fab";
-import { FilterChips } from "@/components/filter-chips";
 import { GlassCard } from "@/components/glass-card";
+import { ProgressBar } from "@/components/progress-bar";
 import { ScreenHeader } from "@/components/screen-header";
 import { SearchField } from "@/components/search-input";
 import { ThemedText } from "@/components/themed-text";
 import { empleados } from "@/data/mock";
 import { colors } from "@/constants/theme";
 
-const filtros = ["Todos", "Tecnico", "Vendedor", "Admin"] as const;
-const etiquetas: Record<(typeof filtros)[number], string> = {
-  Todos: "Todos", Tecnico: "Técnicos", Vendedor: "Vendedores", Admin: "Admin",
-};
+/** Card de la web: Gráfico de Cargos — distribución por cargo */
+const distribucionCargos = [
+  { cargo: "Técnico", cantidad: empleados.filter((e) => e.cargo.startsWith("Técnico")).length },
+  { cargo: "Ventas/Caja", cantidad: empleados.filter((e) => /Vendedor|Cajer/.test(e.cargo)).length },
+  { cargo: "Supervisión/Admin", cantidad: empleados.filter((e) => /Supervisora|Administrador/.test(e.cargo)).length },
+];
 
 export default function EmpleadosScreen() {
-  const [filtro, setFiltro] = useState<(typeof filtros)[number]>("Todos");
+  const [busqueda, setBusqueda] = useState("");
 
   const lista = useMemo(
-    () => (filtro === "Todos" ? empleados : empleados.filter((e) => e.tipo === filtro)),
-    [filtro],
+    () =>
+      empleados.filter((e) =>
+        `${e.nombre} ${e.apellido} ${e.cargo} ${e.cedula}`.toLowerCase().includes(busqueda.toLowerCase()),
+      ),
+    [busqueda],
   );
 
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
       <ScreenHeader
         titulo="Empleados"
-        label="Lista de empleados"
+        label="Catálogo de empleados"
         right={
           <View style={styles.agregarBtn}>
             <Ionicons name="add" size={19} color={colors.yellow} />
@@ -39,81 +43,66 @@ export default function EmpleadosScreen() {
       />
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {/* KPIs */}
-        <View style={styles.kpiRow}>
-          <GlassCard style={styles.kpiCard}>
-            <View style={styles.kpiTop}>
-              <ThemedText type="label" style={styles.kpiLabel}>
-                Activos
-              </ThemedText>
-              <View style={[styles.kpiIcono, { backgroundColor: `${colors.green}1A`, borderColor: `${colors.green}44` }]}>
-                <Ionicons name="people" size={14} color={colors.green} />
-              </View>
-            </View>
-            <View style={styles.kpiValorRow}>
-              <ThemedText type="title" style={styles.kpiValor}>
-                9
-              </ThemedText>
-              <View style={styles.chipMini}>
-                <ThemedText type="label" style={styles.chipMiniTexto}>
-                  9/9 hoy
-                </ThemedText>
-              </View>
-            </View>
-          </GlassCard>
-          <GlassCard style={styles.kpiCard}>
-            <View style={styles.kpiTop}>
-              <ThemedText type="label" style={styles.kpiLabel}>
-                En Turno
-              </ThemedText>
-              <View style={[styles.kpiIcono, { backgroundColor: `${colors.yellow}1A`, borderColor: `${colors.yellow}44` }]}>
-                <Ionicons name="time" size={14} color={colors.yellow} />
-              </View>
-            </View>
-            <View style={styles.kpiValorRow}>
-              <ThemedText type="title" style={[styles.kpiValor, { color: colors.yellow }]}>
-                8
-              </ThemedText>
-              <View style={styles.chipMini}>
-                <ThemedText type="label" style={styles.chipMiniTexto}>
-                  Turno A
-                </ThemedText>
-              </View>
-            </View>
-          </GlassCard>
-        </View>
+        {/* KPI de la web: Empleados */}
+        <GlassCard style={styles.kpiCard}>
+          <ThemedText type="title" style={[styles.kpiValor, { color: colors.green }]}>
+            {empleados.length}
+          </ThemedText>
+          <ThemedText type="label" style={styles.kpiLabel}>
+            Empleados
+          </ThemedText>
+        </GlassCard>
 
-        <SearchField placeholder="Buscar empleado..." />
-        <FilterChips opciones={filtros.map((f) => etiquetas[f])} valor={etiquetas[filtro]} onChange={(v) => setFiltro(filtros.find((f) => etiquetas[f] === v) ?? "Todos")} uppercase />
+        <SearchField placeholder="Buscar empleado, cédula o cargo..." value={busqueda} onChangeText={setBusqueda} />
 
         {lista.map((e) => (
           <GlassCard key={e.id} style={styles.row}>
-            <Avatar inicial={e.nombre[0]} size={42} />
+            <View style={styles.empleadoAvatar}>
+              <ThemedText type="mono" style={styles.empleadoInicial}>
+                {e.nombre[0]}
+                {e.apellido[0]}
+              </ThemedText>
+            </View>
             <View style={styles.info}>
-              <ThemedText type="mono" style={styles.nombre}>
-                {e.nombre}
+              <ThemedText type="mono" style={styles.nombre} numberOfLines={1}>
+                {e.nombre} {e.apellido}
               </ThemedText>
-              <ThemedText type="body" style={styles.cargo}>
-                {e.cargo}
-              </ThemedText>
-              <View style={styles.especialidades}>
-                {e.especialidades.map((s) => (
-                  <View key={s} style={styles.espChip}>
-                    <ThemedText type="label" style={styles.espTexto}>
-                      {s}
-                    </ThemedText>
-                  </View>
-                ))}
+              <View style={styles.datoRow}>
+                <Ionicons name="id-card" size={10} color={colors.textSoft} />
+                <ThemedText type="body" style={styles.dato} numberOfLines={1}>
+                  {e.cedula}
+                </ThemedText>
+              </View>
+              <View style={styles.datoRow}>
+                <Ionicons name="briefcase" size={10} color={colors.textSoft} />
+                <ThemedText type="body" style={styles.dato} numberOfLines={1}>
+                  {e.cargo}
+                </ThemedText>
               </View>
             </View>
-            <View style={styles.der}>
-              <View style={[styles.punto, { backgroundColor: e.disponible ? colors.green : colors.orange }]} />
-              <ThemedText type="body" style={styles.estado}>
-                {e.disponible ? "Disponible" : "Ocupado"}
-              </ThemedText>
-            </View>
+            <Ionicons name="chevron-forward" size={16} color={colors.textSoft} />
           </GlassCard>
         ))}
+
+        {/* Gráfico de Cargos (card de la web) */}
+        <GlassCard style={styles.graficoCard}>
+          <ThemedText type="label" style={styles.graficoTitulo}>
+            Gráfico de Cargos
+          </ThemedText>
+          {distribucionCargos.map((d) => (
+            <View key={d.cargo} style={styles.graficoItem}>
+              <View style={styles.graficoRow}>
+                <ThemedText type="body" style={styles.graficoLabel}>
+                  {d.cargo}
+                </ThemedText>
+                <ThemedText type="body" style={styles.graficoValor}>
+                  {d.cantidad}
+                </ThemedText>
+              </View>
+              <ProgressBar value={d.cantidad / empleados.length} />
+            </View>
+          ))}
+        </GlassCard>
 
         <View style={styles.pie}>
           <ThemedText type="body" style={styles.pieVersion}>
@@ -134,25 +123,25 @@ const styles = StyleSheet.create({
     borderWidth: 1, borderColor: colors.border, alignItems: "center", justifyContent: "center",
   },
   scroll: { paddingHorizontal: 16, paddingBottom: 110, gap: 12 },
-  kpiRow: { flexDirection: "row", gap: 12, marginTop: 4 },
-  kpiCard: { flex: 1, gap: 5, padding: 14 },
-  kpiTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  kpiCard: { alignItems: "center", gap: 3, paddingVertical: 14, marginTop: 4 },
+  kpiValor: { fontSize: 28 },
   kpiLabel: { fontSize: 9 },
-  kpiIcono: { width: 28, height: 28, borderRadius: 9, borderWidth: 1, alignItems: "center", justifyContent: "center" },
-  kpiValorRow: { flexDirection: "row", alignItems: "center", gap: 8 },
-  kpiValor: { fontSize: 24 },
-  chipMini: { backgroundColor: colors.surfaceStrong, borderRadius: 999, paddingVertical: 3, paddingHorizontal: 8 },
-  chipMiniTexto: { fontSize: 9, color: colors.textSoft },
   row: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 12, paddingHorizontal: 14 },
-  info: { flex: 1, gap: 3 },
-  nombre: { fontSize: 14 },
-  cargo: { fontSize: 11, color: colors.textSoft },
-  especialidades: { flexDirection: "row", gap: 5, flexWrap: "wrap" },
-  espChip: { backgroundColor: `${colors.blue}1A`, borderWidth: 1, borderColor: `${colors.blue}44`, borderRadius: 999, paddingVertical: 2, paddingHorizontal: 8 },
-  espTexto: { fontSize: 8, color: "#60A5FA" },
-  der: { alignItems: "flex-end", gap: 4 },
-  punto: { width: 9, height: 9, borderRadius: 5 },
-  estado: { fontSize: 10, color: colors.textSoft },
-  pie: { alignItems: "center", marginTop: 8, paddingBottom: 16 },
+  empleadoAvatar: {
+    width: 42, height: 42, borderRadius: 21, backgroundColor: colors.yellow,
+    alignItems: "center", justifyContent: "center",
+  },
+  empleadoInicial: { color: colors.ink, fontWeight: "800", fontSize: 13 },
+  info: { flex: 1, gap: 2 },
+  nombre: { fontSize: 13 },
+  datoRow: { flexDirection: "row", alignItems: "center", gap: 4 },
+  dato: { fontSize: 10, color: colors.textSoft },
+  graficoCard: { gap: 10, marginBottom: 4 },
+  graficoTitulo: { fontSize: 9 },
+  graficoItem: { gap: 5 },
+  graficoRow: { flexDirection: "row", justifyContent: "space-between" },
+  graficoLabel: { fontSize: 12 },
+  graficoValor: { fontSize: 12, color: colors.yellow, fontWeight: "700" },
+  pie: { alignItems: "center", paddingBottom: 16 },
   pieVersion: { fontSize: 11, color: colors.textSoft },
 });

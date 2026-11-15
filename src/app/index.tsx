@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5, borderColor: `${colors.yellow}66`, backgroundColor: `${colors.yellow}14`,
     alignItems: "center", justifyContent: "center", marginBottom: 4,
   },
-  logoTexto: { fontFamily: fontFamily.bodyExtraBold, fontSize: 30, letterSpacing: 6, color: colors.text },
+  logoTexto: { fontFamily: fontFamily.bodyExtraBold, fontSize: 26, letterSpacing: 4.5, color: colors.text },
   eslogan: { fontSize: 12, textAlign: "center", maxWidth: 280 },
   formCard: { gap: spacing.sm, padding: 20 },
   formEyebrow: { color: colors.yellow, letterSpacing: 1.2 },

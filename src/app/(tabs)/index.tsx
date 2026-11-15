@@ -8,7 +8,7 @@ import { GlassCard } from "@/components/glass-card";
 import { KpiCard } from "@/components/kpi-card";
 import { StatusChip } from "@/components/status-chip";
 import { ThemedText } from "@/components/themed-text";
-import { actividad, kpis } from "@/data/mock";
+import { actividad, kpis, widgets } from "@/data/mock";
 import { colors, fontFamily, spacing } from "@/constants/theme";
 
 const accesos = [
@@ -101,6 +101,28 @@ export default function InicioScreen() {
           ))}
         </GlassCard>
 
+        {/* Widgets del dashboard web */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.widgetsRow}>
+          {widgets.map((w) => (
+            <GlassCard key={w.id} style={[styles.widgetCard, w.alerta && styles.widgetAlerta]}>
+              <View style={styles.widgetTop}>
+                <View style={[styles.widgetIcono, { backgroundColor: `${w.color}1A` }]}>
+                  <Ionicons name={w.icono as never} size={15} color={w.color} />
+                </View>
+                <ThemedText type="title" style={[styles.widgetValor, { color: w.color }]}>
+                  {w.valor}
+                </ThemedText>
+              </View>
+              <ThemedText type="body" style={styles.widgetLabel} numberOfLines={1}>
+                {w.label}
+              </ThemedText>
+              <ThemedText type="body" style={[styles.widgetTrend, w.alerta && { color: colors.red }]}>
+                {w.tendencia}
+              </ThemedText>
+            </GlassCard>
+          ))}
+        </ScrollView>
+
         {/* Pie */}
         <View style={styles.pie}>
           <ThemedText type="body" style={styles.pieVersion}>
@@ -133,7 +155,7 @@ const styles = StyleSheet.create({
   kpiGrid: { flexDirection: "row", flexWrap: "wrap", gap: spacing.md },
   seccion: { marginTop: 2 },
   accesosRow: { flexDirection: "row", justifyContent: "space-between", paddingHorizontal: spacing.xs },
-  acceso: { alignItems: "center", gap: 6, width: 76 },
+  acceso: { alignItems: "center", gap: 6, flex: 1, maxWidth: 76 },
   accesoIcono: { width: 52, height: 52, borderRadius: 26, borderWidth: 1, alignItems: "center", justifyContent: "center" },
   accesoLabel: { fontSize: 11, textAlign: "center" },
   actividadCard: { gap: 2 },
@@ -145,6 +167,14 @@ const styles = StyleSheet.create({
   actividadTexto: { flex: 1, gap: 1 },
   actividadTextoPrincipal: { fontSize: 13 },
   hora: { fontSize: 11, color: colors.textSoft },
+  widgetsRow: { gap: spacing.md, paddingHorizontal: 2 },
+  widgetCard: { width: 150, gap: 4, padding: 12 },
+  widgetAlerta: { borderColor: `${colors.red}55` },
+  widgetTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  widgetIcono: { width: 28, height: 28, borderRadius: 9, alignItems: "center", justifyContent: "center" },
+  widgetValor: { fontSize: 18 },
+  widgetLabel: { fontSize: 10, color: colors.textMuted },
+  widgetTrend: { fontSize: 10, color: colors.textSoft },
   pie: { alignItems: "center", gap: 6, marginTop: spacing.md, paddingBottom: spacing.lg },
   pieVersion: { fontSize: 11, color: colors.textSoft },
   pieLinks: { fontSize: 10, color: colors.textSoft },

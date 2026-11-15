@@ -6,7 +6,6 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { GlassCard } from "@/components/glass-card";
 import { ScreenHeader } from "@/components/screen-header";
-import { StatusChip } from "@/components/status-chip";
 import { ThemedText } from "@/components/themed-text";
 import { tradein } from "@/data/mock";
 import { colors, fontFamily, radius } from "@/constants/theme";
@@ -128,45 +127,6 @@ export default function TradeinScreen() {
         <Pressable style={styles.aceptar}>
           <Text style={styles.aceptarTexto}>ACEPTAR COTIZACIÓN →</Text>
         </Pressable>
-
-        {/* Equipos en proceso */}
-        <View style={styles.procesoHeader}>
-          <View style={styles.procesoTituloRow}>
-            <ThemedText type="label">Equipos en Proceso</ThemedText>
-            <View style={styles.contadorChip}>
-              <Text style={styles.contadorTexto}>{t.equipos.length}</Text>
-            </View>
-          </View>
-          <ThemedText type="body" style={styles.verTodos}>
-            Ver todos ›
-          </ThemedText>
-        </View>
-
-        {t.equipos.map((e) => (
-          <GlassCard key={e.id} style={styles.equipoRow}>
-            <View style={[styles.equipoAvatar, { backgroundColor: e.color }]}>
-              <Text style={styles.equipoInicial}>{e.inicial}</Text>
-            </View>
-            <View style={styles.equipoInfo}>
-              <ThemedText type="mono" style={styles.equipoNombre} numberOfLines={1}>
-                {e.dispositivo}
-              </ThemedText>
-              <ThemedText type="body" style={styles.equipoCliente}>
-                {e.cliente}
-              </ThemedText>
-            </View>
-            <View style={styles.equipoDer}>
-              <ThemedText type="mono" style={styles.equipoOferta}>
-                {e.oferta}
-                <ThemedText type="label" style={styles.equipoMxn}>
-                  {" "}
-                  MXN
-                </ThemedText>
-              </ThemedText>
-              <StatusChip estado={e.estado} small />
-            </View>
-          </GlassCard>
-        ))}
 
         <Pressable style={styles.nueva}>
           <Ionicons name="add-circle" size={18} color={colors.yellow} />

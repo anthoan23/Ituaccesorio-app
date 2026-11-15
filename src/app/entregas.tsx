@@ -3,35 +3,33 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 
-import { Avatar } from "@/components/avatar";
 import { Fab } from "@/components/fab";
-import { FilterChips } from "@/components/filter-chips";
 import { GlassCard } from "@/components/glass-card";
 import { ScreenHeader } from "@/components/screen-header";
+import { SearchField } from "@/components/search-input";
 import { StatusChip } from "@/components/status-chip";
 import { ThemedText } from "@/components/themed-text";
 import { entregas, deliveryPersonal, recepcionOrdenes, RecepcionOrden } from "@/data/mock";
 import { colors, radius } from "@/constants/theme";
 
-const filtros = ["Todas", "En ruta", "Entregado", "Pendiente"] as const;
-const etiquetas: Record<(typeof filtros)[number], string> = {
-  Todas: "Todas", "En ruta": "En ruta", Entregado: "Entregadas", Pendiente: "Pendiente",
-};
-
+/** KPIs de la web: Entregas registradas · Personal Delivery · Facturas pendientes */
 const kpisDespachos = [
-  { label: "Registradas", valor: "12", icono: "car" as const, color: colors.blue },
-  { label: "Personal", valor: "4", icono: "people" as const, color: colors.green },
-  { label: "Pendientes", valor: "3", icono: "document-text" as const, color: colors.yellow },
+  { label: "Entregas registradas", valor: "12", color: colors.blue },
+  { label: "Personal Delivery", valor: "4", color: colors.green },
+  { label: "Facturas pendientes", valor: "3", color: colors.yellow },
 ];
 
 export default function EntregasScreen() {
   const [vista, setVista] = useState<"Despachos" | "Recepción">("Despachos");
-  const [filtro, setFiltro] = useState<(typeof filtros)[number]>("Todas");
+  const [busqueda, setBusqueda] = useState("");
   const [recepciones, setRecepciones] = useState(recepcionOrdenes);
 
   const lista = useMemo(
-    () => (filtro === "Todas" ? entregas : entregas.filter((e) => e.estado === filtro)),
-    [filtro],
+    () =>
+      entregas.filter((e) =>
+        `${e.id} ${e.factura} ${e.delivery} ${e.direccion}`.toLowerCase().includes(busqueda.toLowerCase()),
+      ),
+    [busqueda],
   );
 
   const resumenRecepcion = useMemo(
@@ -44,13 +42,15 @@ export default function EntregasScreen() {
   );
 
   const confirmarRecepcion = (id: string) =>
-    setRecepciones((rs) => rs.map((r) => (r.id === id ? { ...r, estado: "Recibido" } : r)));
+    setRecepciones((rs) =>
+      rs.map((r) => (r.id === id ? { ...r, estado: "Recibido", recibidoPor: "Anthoan G." } : r)),
+    );
 
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
       <ScreenHeader titulo="Entregas" label="Administración de entregas" />
 
-      {/* Tabs Despachos / Recepción */}
+      {/* Tabs Despachos / Recepción (2 vistas de la web) */}
       <View style={styles.tabs}>
         {(["Despachos", "Recepción"] as const).map((t) => (
           <Pressable key={t} style={[styles.tab, vista === t && styles.tabActivo]} onPress={() => setVista(t)}>
@@ -62,13 +62,10 @@ export default function EntregasScreen() {
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {vista === "Despachos" ? (
           <>
-            {/* KPIs */}
+            {/* KPIs de la web */}
             <View style={styles.kpiRow}>
               {kpisDespachos.map((k) => (
                 <GlassCard key={k.label} style={styles.kpiCard}>
-                  <View style={[styles.kpiIcono, { backgroundColor: `${k.color}1A`, borderColor: `${k.color}44` }]}>
-                    <Ionicons name={k.icono} size={14} color={k.color} />
-                  </View>
                   <ThemedText type="title" style={[styles.kpiValor, { color: k.color }]}>
                     {k.valor}
                   </ThemedText>
@@ -79,7 +76,7 @@ export default function EntregasScreen() {
               ))}
             </View>
 
-            <FilterChips opciones={filtros.map((f) => etiquetas[f])} valor={etiquetas[filtro]} onChange={(v) => setFiltro(filtros.find((f) => etiquetas[f] === v) ?? "Todas")} />
+            <SearchField placeholder="Buscar entrega, factura o delivery..." value={busqueda} onChangeText={setBusqueda} />
 
             {/* Lista de entregas */}
             {lista.map((e) => (
@@ -90,11 +87,16 @@ export default function EntregasScreen() {
                   </ThemedText>
                   <StatusChip estado={e.estado} />
                 </View>
+                <ThemedText type="label" style={styles.factura}>
+                  Factura {e.factura}
+                </ThemedText>
                 <View style={styles.entregaMedio}>
-                  <Avatar inicial={e.cliente[0]} size={36} />
+                  <View style={styles.deliveryAvatar}>
+                    <Text style={styles.deliveryInicial}>{e.delivery[0]}</Text>
+                  </View>
                   <View style={styles.entregaInfo}>
-                    <ThemedText type="mono" style={styles.entregaCliente}>
-                      {e.cliente}
+                    <ThemedText type="mono" style={styles.entregaCliente} numberOfLines={1}>
+                      {e.delivery}
                     </ThemedText>
                     <ThemedText type="body" style={styles.entregaDireccion} numberOfLines={1}>
                       {e.direccion}
@@ -103,33 +105,31 @@ export default function EntregasScreen() {
                 </View>
                 <View style={[styles.entregaPie, styles.divisorTop]}>
                   <View style={styles.horaRow}>
-                    <Ionicons name="time" size={12} color={colors.blue} />
+                    <Ionicons name="calendar" size={12} color={colors.blue} />
                     <ThemedText type="body" style={styles.hora}>
-                      {e.hora}
+                      {e.fecha}
                     </ThemedText>
                   </View>
-                  <ThemedText type="mono" style={styles.monto}>
-                    {e.monto}
-                  </ThemedText>
                 </View>
               </GlassCard>
             ))}
 
-            {/* Personal de delivery */}
+            {/* Personal de delivery (web: Cédula · Nombre completo) */}
             <ThemedText type="label" style={styles.personalTitulo}>
               Personal de Delivery
             </ThemedText>
             <GlassCard style={styles.personalCard}>
               {deliveryPersonal.map((p, i) => (
                 <View key={p.id} style={[styles.personalRow, i > 0 && styles.divisorTop]}>
-                  <Avatar inicial={p.nombre[0]} size={34} />
-                  <ThemedText type="mono" style={styles.personalNombre}>
-                    {p.nombre}
-                  </ThemedText>
-                  <View style={styles.personalDer}>
-                    <View style={[styles.punto, { backgroundColor: p.disponible ? colors.green : colors.orange }]} />
-                    <ThemedText type="body" style={styles.personalEstado}>
-                      {p.disponible ? "Disponible" : "Ocupado"}
+                  <View style={styles.personalIcono}>
+                    <Ionicons name="bicycle" size={15} color={colors.green} />
+                  </View>
+                  <View style={styles.personalInfo}>
+                    <ThemedText type="mono" style={styles.personalNombre} numberOfLines={1}>
+                      {p.nombre}
+                    </ThemedText>
+                    <ThemedText type="body" style={styles.personalCedula}>
+                      Céd.: {p.cedula}
                     </ThemedText>
                   </View>
                 </View>
@@ -138,7 +138,7 @@ export default function EntregasScreen() {
           </>
         ) : (
           <>
-            {/* KPIs Recepción */}
+            {/* Recepción: KPIs */}
             <View style={styles.kpiRow}>
               <GlassCard style={styles.kpiCard}>
                 <ThemedText type="title" style={[styles.kpiValor, { color: colors.yellow }]}>
@@ -166,7 +166,7 @@ export default function EntregasScreen() {
               </GlassCard>
             </View>
 
-            {/* Órdenes de proveedores */}
+            {/* Órdenes de proveedores (web: ID · Proveedor · Fecha · Hora · Estado · Costo total) */}
             {recepciones.map((r: RecepcionOrden) => (
               <GlassCard key={r.id} style={styles.entregaCard}>
                 <View style={styles.entregaTop}>
@@ -180,11 +180,11 @@ export default function EntregasScreen() {
                     <Ionicons name="cube" size={16} color={colors.blue} />
                   </View>
                   <View style={styles.entregaInfo}>
-                    <ThemedText type="mono" style={styles.entregaCliente}>
+                    <ThemedText type="mono" style={styles.entregaCliente} numberOfLines={1}>
                       {r.proveedor}
                     </ThemedText>
-                    <ThemedText type="body" style={styles.entregaDireccion} numberOfLines={1}>
-                      {r.resumen}
+                    <ThemedText type="body" style={styles.entregaDireccion}>
+                      Costo total: {r.costoTotal}
                     </ThemedText>
                   </View>
                 </View>
@@ -192,21 +192,18 @@ export default function EntregasScreen() {
                   <View style={styles.horaRow}>
                     <Ionicons name="calendar" size={12} color={colors.textSoft} />
                     <ThemedText type="body" style={styles.hora}>
-                      {r.fechaEsperada}
+                      {r.fecha} · {r.hora}
                     </ThemedText>
                   </View>
                   {r.estado !== "Recibido" ? (
                     <Pressable style={styles.confirmarBtn} onPress={() => confirmarRecepcion(r.id)}>
                       <Ionicons name="checkmark" size={13} color={colors.green} />
-                      <Text style={styles.confirmarTexto}>Confirmar recepción</Text>
+                      <Text style={styles.confirmarTexto}>Confirmar</Text>
                     </Pressable>
                   ) : (
-                    <View style={styles.recibidoRow}>
-                      <Ionicons name="checkmark-circle" size={13} color={colors.green} />
-                      <ThemedText type="body" style={styles.recibidoTexto}>
-                        Recibida
-                      </ThemedText>
-                    </View>
+                    <ThemedText type="body" style={styles.recibidoTexto}>
+                      Recibido por: {r.recibidoPor}
+                    </ThemedText>
                   )}
                 </View>
               </GlassCard>
@@ -239,21 +236,25 @@ const styles = StyleSheet.create({
   tabTextoActivo: { color: colors.ink },
   scroll: { paddingHorizontal: 16, paddingBottom: 110, gap: 12 },
   kpiRow: { flexDirection: "row", gap: 10, marginTop: 4 },
-  kpiCard: { flex: 1, alignItems: "flex-start", gap: 4, padding: 12 },
-  kpiIcono: { width: 28, height: 28, borderRadius: 9, borderWidth: 1, alignItems: "center", justifyContent: "center" },
+  kpiCard: { flex: 1, alignItems: "center", gap: 3, paddingVertical: 12, paddingHorizontal: 6 },
   kpiValor: { fontSize: 22 },
-  kpiLabel: { fontSize: 9, textAlign: "center" },
+  kpiLabel: { fontSize: 8, textAlign: "center" },
   entregaCard: { gap: 10 },
   entregaTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   entregaId: { color: colors.yellow, fontWeight: "800" },
+  factura: { fontSize: 10, color: colors.textSoft, letterSpacing: 1 },
   entregaMedio: { flexDirection: "row", alignItems: "center", gap: 10 },
+  deliveryAvatar: {
+    width: 36, height: 36, borderRadius: 18, backgroundColor: colors.yellow,
+    alignItems: "center", justifyContent: "center",
+  },
+  deliveryInicial: { color: colors.ink, fontWeight: "800", fontSize: 13 },
   entregaInfo: { flex: 1, gap: 2 },
   entregaCliente: { fontSize: 14 },
   entregaDireccion: { fontSize: 11, color: colors.textSoft },
   entregaPie: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   horaRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   hora: { fontSize: 12 },
-  monto: { color: colors.yellow, fontWeight: "800" },
   divisorTop: { borderTopWidth: 1, borderTopColor: colors.borderSoft, paddingTop: 10 },
   proveedorIcono: {
     width: 36, height: 36, borderRadius: 10, backgroundColor: `${colors.blue}1A`,
@@ -265,15 +266,17 @@ const styles = StyleSheet.create({
     borderRadius: 999, paddingVertical: 5, paddingHorizontal: 10,
   },
   confirmarTexto: { color: colors.green, fontSize: 11, fontWeight: "700" },
-  recibidoRow: { flexDirection: "row", alignItems: "center", gap: 5 },
   recibidoTexto: { fontSize: 11, color: colors.green },
   personalTitulo: { marginTop: 4 },
   personalCard: { paddingVertical: 4, paddingHorizontal: 14 },
   personalRow: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 10 },
-  personalNombre: { flex: 1, fontSize: 13 },
-  personalDer: { flexDirection: "row", alignItems: "center", gap: 6 },
-  punto: { width: 9, height: 9, borderRadius: 5 },
-  personalEstado: { fontSize: 11, color: colors.textSoft },
+  personalIcono: {
+    width: 34, height: 34, borderRadius: 10, backgroundColor: `${colors.green}1A`,
+    borderWidth: 1, borderColor: `${colors.green}44`, alignItems: "center", justifyContent: "center",
+  },
+  personalInfo: { flex: 1, gap: 1 },
+  personalNombre: { fontSize: 13 },
+  personalCedula: { fontSize: 10, color: colors.textSoft },
   pie: { alignItems: "center", marginTop: 4, paddingBottom: 16 },
   pieVersion: { fontSize: 11, color: colors.textSoft },
 });

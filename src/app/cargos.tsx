@@ -38,11 +38,6 @@ export default function CargosScreen() {
               </ThemedText>
             </View>
             <View style={styles.der}>
-              <View style={styles.activosChip}>
-                <Text style={styles.activosTexto}>
-                  {c.activos} {c.activos === 1 ? "activo" : "activos"}
-                </Text>
-              </View>
               <Ionicons name="chevron-forward" size={16} color={colors.textSoft} />
             </View>
           </GlassCard>

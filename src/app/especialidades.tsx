@@ -12,7 +12,15 @@ import { colors, fontFamily } from "@/constants/theme";
 export default function EspecialidadesScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
-      <ScreenHeader titulo="Especialidades" label="Catálogo de especialidades" />
+      <ScreenHeader
+        titulo="Especialidades"
+        label="Catálogo de especialidades"
+        right={
+          <View style={styles.contadorChip}>
+            <Text style={styles.contadorTexto}>{especialidades.length} especialidades</Text>
+          </View>
+        }
+      />
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <SearchField placeholder="Buscar especialidad..." />
@@ -31,9 +39,6 @@ export default function EspecialidadesScreen() {
               </ThemedText>
             </View>
             <View style={styles.der}>
-              <View style={styles.tecnicosChip}>
-                <Text style={styles.tecnicosTexto}>{e.tecnicos} técnicos</Text>
-              </View>
               <Ionicons name="chevron-forward" size={16} color={colors.textSoft} />
             </View>
           </GlassCard>
@@ -68,6 +73,11 @@ const styles = StyleSheet.create({
     borderRadius: 999, paddingVertical: 3, paddingHorizontal: 9,
   },
   tecnicosTexto: { color: "#60A5FA", fontSize: 10, fontWeight: "700" },
+  contadorChip: {
+    backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border,
+    borderRadius: 999, paddingVertical: 5, paddingHorizontal: 10,
+  },
+  contadorTexto: { color: colors.textMuted, fontSize: 11, fontWeight: "600" },
   registrar: {
     flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8,
     backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.inputBorder,

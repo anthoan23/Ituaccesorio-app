@@ -9,7 +9,7 @@ import { GlassCard } from "@/components/glass-card";
 import { ProgressBar } from "@/components/progress-bar";
 import { ScreenHeader } from "@/components/screen-header";
 import { ThemedText } from "@/components/themed-text";
-import { reportes } from "@/data/mock";
+import { reportes, ventasLocales } from "@/data/mock";
 import { colors, fontFamily } from "@/constants/theme";
 
 const periodos = ["Hoy", "Semana", "Mes", "Año"] as const;
@@ -123,6 +123,33 @@ export default function ReportesScreen() {
           ))}
         </GlassCard>
 
+        {/* Ventas Locales Registradas (tabla de la web) */}
+        <GlassCard style={styles.ventasCard}>
+          <ThemedText type="label" style={styles.ventasTitulo}>
+            Ventas Locales Registradas
+          </ThemedText>
+          {ventasLocales.map((v) => (
+            <View key={v.id} style={styles.ventaItem}>
+              <View style={styles.ventaIzq}>
+                <ThemedText type="mono" style={styles.ventaFactura}>
+                  {v.factura}
+                </ThemedText>
+                <ThemedText type="body" style={styles.ventaCliente} numberOfLines={1}>
+                  {v.cliente} · {v.metodo}
+                </ThemedText>
+              </View>
+              <View style={styles.ventaDer}>
+                <ThemedText type="mono" style={styles.ventaMonto}>
+                  {v.monto}
+                </ThemedText>
+                <ThemedText type="body" style={styles.ventaFecha}>
+                  {v.fecha}
+                </ThemedText>
+              </View>
+            </View>
+          ))}
+        </GlassCard>
+
         {/* Exportar */}
         <Pressable style={styles.exportar}>
           <View style={styles.exportarIcono}>
@@ -191,6 +218,15 @@ const styles = StyleSheet.create({
   topPos: { color: colors.yellow, fontSize: 11, fontWeight: "800" },
   topNombre: { flex: 1, fontSize: 13 },
   topVendidos: { fontSize: 11, color: colors.textSoft },
+  ventasCard: { gap: 10 },
+  ventasTitulo: { fontSize: 9 },
+  ventaItem: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  ventaIzq: { flex: 1, gap: 2 },
+  ventaFactura: { color: colors.yellow, fontSize: 12, fontWeight: "700" },
+  ventaCliente: { fontSize: 11, color: colors.textSoft },
+  ventaDer: { alignItems: "flex-end", gap: 2 },
+  ventaMonto: { color: colors.text, fontWeight: "800" },
+  ventaFecha: { fontSize: 10, color: colors.textSoft },
   exportar: {
     flexDirection: "row", alignItems: "center", gap: 12,
     backgroundColor: `${colors.yellow}0D`, borderWidth: 1, borderColor: `${colors.yellow}44`,

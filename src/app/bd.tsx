@@ -4,34 +4,28 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { GlassCard } from "@/components/glass-card";
 import { ScreenHeader } from "@/components/screen-header";
+import { StatusChip } from "@/components/status-chip";
 import { ThemedText } from "@/components/themed-text";
 import { backups } from "@/data/mock";
 import { colors, fontFamily, radius } from "@/constants/theme";
-
-const stats = [
-  { label: "Total Registros", valor: backups.stats.registros, icono: "server" as const, color: colors.yellow },
-  { label: "Esquemas", valor: backups.stats.esquemas, icono: "git-network" as const, color: colors.blue },
-  { label: "Tablas", valor: backups.stats.tablas, icono: "grid" as const, color: colors.green },
-];
 
 export default function BDMantenimientoScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
       <ScreenHeader
         titulo="Mantenimiento de BD"
-        label="Respaldos e indexación"
+        label="Respaldo de Base de Datos"
         right={
           <View style={styles.okChip}>
-            <View style={styles.okPunto} />
             <ThemedText type="label" style={styles.okTexto}>
-              Servidor OK
+              {backups.lista.length} respaldos
             </ThemedText>
           </View>
         }
       />
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {/* Respaldos */}
+        {/* Última copia */}
         <GlassCard style={styles.gap}>
           <View style={styles.ultimaRow}>
             <View style={[styles.ultimaIcono, { backgroundColor: `${colors.green}1A`, borderColor: `${colors.green}44` }]}>
@@ -39,15 +33,12 @@ export default function BDMantenimientoScreen() {
             </View>
             <View style={styles.ultimaInfo}>
               <ThemedText type="label" style={styles.ultimaLabel}>
-                Última Copia
+                Último Respaldo
               </ThemedText>
               <ThemedText type="mono" style={styles.ultimaValor}>
                 {backups.ultima.fecha} · {backups.ultima.hace}
               </ThemedText>
             </View>
-            <ThemedText type="body" style={styles.ultimaTamano}>
-              {backups.ultima.tamaño}
-            </ThemedText>
           </View>
           <Pressable style={styles.crearBtn}>
             <Ionicons name="shield-checkmark" size={16} color={colors.ink} />
@@ -58,9 +49,9 @@ export default function BDMantenimientoScreen() {
           </ThemedText>
         </GlassCard>
 
-        {/* Lista de respaldos */}
+        {/* Historial (web: ID · Usuario · Nombre · Fecha · Estado) */}
         {backups.lista.map((b) => (
-          <GlassCard key={b.nombre} style={styles.backupRow}>
+          <GlassCard key={b.id} style={styles.backupRow}>
             <View style={[styles.backupIcono, { backgroundColor: `${colors.blue}1A` }]}>
               <Ionicons name="file-tray-full" size={15} color={colors.blue} />
             </View>
@@ -68,10 +59,14 @@ export default function BDMantenimientoScreen() {
               <ThemedText type="mono" style={styles.backupNombre} numberOfLines={1}>
                 {b.nombre}
               </ThemedText>
-              <ThemedText type="body" style={styles.backupMeta}>
-                {b.fecha} · {b.tamaño}
-              </ThemedText>
+              <View style={styles.backupMetaRow}>
+                <Ionicons name="person" size={9} color={colors.textSoft} />
+                <ThemedText type="body" style={styles.backupMeta}>
+                  {b.usuario} · {b.fecha}
+                </ThemedText>
+              </View>
             </View>
+            <StatusChip estado="Completado" small />
             <View style={[styles.accionCircular, { borderColor: `${colors.blue}55`, backgroundColor: `${colors.blue}1A` }]}>
               <Ionicons name="cloud-download" size={13} color={colors.blue} />
             </View>
@@ -80,37 +75,6 @@ export default function BDMantenimientoScreen() {
             </View>
           </GlassCard>
         ))}
-
-        {/* Estadísticas */}
-        <GlassCard style={styles.gap}>
-          <ThemedText type="label">Estadísticas</ThemedText>
-          <View style={styles.statsGrid}>
-            {stats.map((s) => (
-              <View key={s.label} style={styles.statCaja}>
-                <View style={[styles.statIcono, { backgroundColor: `${s.color}1A` }]}>
-                  <Ionicons name={s.icono} size={14} color={s.color} />
-                </View>
-                <ThemedText type="label" style={styles.statLabel}>
-                  {s.label}
-                </ThemedText>
-                <ThemedText type="title" style={styles.statValor}>
-                  {s.valor}
-                </ThemedText>
-              </View>
-            ))}
-            <View style={styles.statCaja}>
-              <View style={[styles.statIcono, { backgroundColor: `${colors.green}1A` }]}>
-                <Ionicons name="checkmark-circle" size={14} color={colors.green} />
-              </View>
-              <ThemedText type="label" style={styles.statLabel}>
-                Integridad
-              </ThemedText>
-              <ThemedText type="title" style={[styles.statValor, { color: colors.green }]}>
-                OK
-              </ThemedText>
-            </View>
-          </View>
-        </GlassCard>
 
         {/* Zona de peligro */}
         <View style={styles.peligro}>
@@ -139,12 +103,10 @@ export default function BDMantenimientoScreen() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   okChip: {
-    flexDirection: "row", alignItems: "center", gap: 5,
-    backgroundColor: `${colors.green}14`, borderWidth: 1, borderColor: `${colors.green}44`,
+    backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border,
     borderRadius: 999, paddingVertical: 5, paddingHorizontal: 10,
   },
-  okPunto: { width: 7, height: 7, borderRadius: 4, backgroundColor: colors.green },
-  okTexto: { fontSize: 9, color: colors.green },
+  okTexto: { fontSize: 9, color: colors.textMuted },
   scroll: { paddingHorizontal: 16, paddingBottom: 32, gap: 12 },
   gap: { gap: 14 },
   ultimaRow: { flexDirection: "row", alignItems: "center", gap: 12 },
@@ -152,27 +114,19 @@ const styles = StyleSheet.create({
   ultimaInfo: { flex: 1, gap: 2 },
   ultimaLabel: { fontSize: 9 },
   ultimaValor: { fontSize: 12, fontWeight: "700" },
-  ultimaTamano: { fontSize: 11, color: colors.textSoft },
   crearBtn: {
     flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8,
     backgroundColor: colors.yellow, borderRadius: radius.md, paddingVertical: 14,
   },
   crearTexto: { color: colors.ink, fontFamily: fontFamily.bodyExtraBold, fontSize: 13 },
   nota: { fontSize: 11, color: colors.textSoft, textAlign: "center" },
-  backupRow: { flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 11, paddingHorizontal: 14 },
+  backupRow: { flexDirection: "row", alignItems: "center", gap: 8, paddingVertical: 11, paddingHorizontal: 14 },
   backupIcono: { width: 34, height: 34, borderRadius: 10, alignItems: "center", justifyContent: "center" },
-  backupInfo: { flex: 1, gap: 1 },
+  backupInfo: { flex: 1, gap: 2 },
   backupNombre: { fontSize: 12 },
+  backupMetaRow: { flexDirection: "row", alignItems: "center", gap: 4 },
   backupMeta: { fontSize: 10, color: colors.textSoft },
   accionCircular: { width: 30, height: 30, borderRadius: 15, borderWidth: 1, alignItems: "center", justifyContent: "center" },
-  statsGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  statCaja: {
-    width: "48.5%", flexGrow: 1, backgroundColor: colors.bgSoft, borderWidth: 1, borderColor: colors.borderSoft,
-    borderRadius: radius.md, padding: 12, gap: 3, alignItems: "flex-start",
-  },
-  statIcono: { width: 26, height: 26, borderRadius: 8, alignItems: "center", justifyContent: "center" },
-  statLabel: { fontSize: 9 },
-  statValor: { fontSize: 18 },
   peligro: {
     backgroundColor: `${colors.red}0A`, borderWidth: 1, borderColor: `${colors.red}44`,
     borderRadius: radius.xl, padding: 16, gap: 8,

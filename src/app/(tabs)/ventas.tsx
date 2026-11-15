@@ -10,7 +10,7 @@ import { ThemedText } from "@/components/themed-text";
 import { catalogo, ProductoCatalogo } from "@/data/mock";
 import { colors, fontFamily, radius, spacing } from "@/constants/theme";
 
-const categorias = ["Todos", "Fundas", "Micas", "Cables", "Cargadores"] as const;
+const categorias = ["Todos", "Teléfonos", "Accesorios", "Repuestos", "Protección iPhone"] as const;
 
 const iconos: Record<ProductoCatalogo["icono"], keyof typeof Ionicons.glyphMap> = {
   phone: "phone-portrait",
@@ -52,7 +52,7 @@ export default function VentasScreen() {
             </View>
           </View>
           <ThemedText type="body" style={styles.subtitulo}>
-            Accesorios oficiales, micas y repuestos
+            Nuestros productos · Catálogo completo
           </ThemedText>
         </View>
         <View style={styles.carritoIcono}>
@@ -120,10 +120,10 @@ export default function VentasScreen() {
           <Ionicons name="cart" size={18} color={colors.ink} />
         </View>
         <View style={styles.carroInfo}>
-          <ThemedText type="label" style={styles.carroCantidad}>
-            {carro.cantidad} productos
+          <ThemedText type="label" style={styles.carroCantidad} numberOfLines={1}>
+            Mi carrito · {carro.cantidad} productos
           </ThemedText>
-          <ThemedText type="mono" style={styles.carroTotal}>
+          <ThemedText type="mono" style={styles.carroTotal} numberOfLines={1}>
             ${carro.total.toLocaleString("es-MX", { minimumFractionDigits: 2 })}
             <ThemedText type="label" style={styles.carroMxn}>
               {" "}
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     width: 38, height: 38, borderRadius: 19, backgroundColor: colors.yellow,
     alignItems: "center", justifyContent: "center",
   },
-  carroInfo: { flex: 1, gap: 1 },
+  carroInfo: { flex: 1, gap: 1, flexShrink: 1 },
   carroCantidad: { fontSize: 9 },
   carroTotal: { color: colors.yellow, fontWeight: "800", fontSize: 16 },
   carroMxn: { fontSize: 9, color: colors.textSoft },

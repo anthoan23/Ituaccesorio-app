@@ -8,19 +8,17 @@ import { Fab } from "@/components/fab";
 import { GlassCard } from "@/components/glass-card";
 import { SearchField } from "@/components/search-input";
 import { ThemedText } from "@/components/themed-text";
-import { inventario } from "@/data/mock";
-import { colors, fontFamily, radius, spacing } from "@/constants/theme";
+import { inventario, inventarioKpis } from "@/data/mock";
+import { colors, radius, spacing } from "@/constants/theme";
 
-const categorias = ["Todos", "Accesorios", "Repuestos", "Pantallas", "Carga", "Fundas"] as const;
-
-const iconoCategoria: Record<string, keyof typeof Ionicons.glyphMap> = {
-  Repuestos: "phone-portrait",
+const iconoClase: Record<string, keyof typeof Ionicons.glyphMap> = {
+  Pantallas: "phone-portrait",
   Accesorios: "shield-checkmark",
   Carga: "swap-horizontal",
-  Fundas: "albums",
+  Repuestos: "construct",
 };
 
-function colorStock(stock: number) {
+function colorExistencia(stock: number) {
   if (stock <= 3) return { bg: `${colors.red}22`, text: "#F87171", borde: "#F87171" };
   if (stock <= 10) return { bg: `${colors.yellow}22`, text: colors.yellow, borde: colors.yellow };
   return { bg: `${colors.green}22`, text: colors.green, borde: colors.green };
@@ -28,11 +26,17 @@ function colorStock(stock: number) {
 
 export default function InventarioScreen() {
   const router = useRouter();
-  const [categoria, setCategoria] = useState<(typeof categorias)[number]>("Todos");
+  const [busqueda, setBusqueda] = useState("");
 
   const lista = useMemo(
-    () => (categoria === "Todos" ? inventario : inventario.filter((p) => p.categoria === categoria)),
-    [categoria],
+    () =>
+      inventario.filter(
+        (p) =>
+          p.producto.toLowerCase().includes(busqueda.toLowerCase()) ||
+          p.marca.toLowerCase().includes(busqueda.toLowerCase()) ||
+          p.clase.toLowerCase().includes(busqueda.toLowerCase()),
+      ),
+    [busqueda],
   );
 
   return (
@@ -51,7 +55,7 @@ export default function InventarioScreen() {
             <View style={styles.punto} />
           </View>
           <ThemedText type="label" style={styles.headerLabel}>
-            Catálogo & Repuestos
+            Existencias por producto
           </ThemedText>
         </View>
         <View style={styles.scanBtn}>
@@ -60,61 +64,48 @@ export default function InventarioScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {/* KPIs */}
-        <View style={styles.kpiRow}>
+        {/* KPIs de la web: Clases · Marcas · Productos · Piezas en stock */}
+        <View style={styles.kpiGrid}>
           <GlassCard style={styles.kpiCard}>
-            <View style={styles.kpiTop}>
-              <ThemedText type="label" style={styles.kpiLabel}>
-                Productos
-              </ThemedText>
-              <View style={[styles.kpiIcono, { backgroundColor: `${colors.yellow}1A`, borderColor: `${colors.yellow}44` }]}>
-                <Ionicons name="archive" size={14} color={colors.yellow} />
-              </View>
-            </View>
-            <ThemedText type="title" style={styles.kpiValor}>
-              342
+            <ThemedText type="title" style={[styles.kpiValor, { color: colors.yellow }]}>
+              {inventarioKpis.clases}
             </ThemedText>
-            <View style={styles.kpiTrend}>
-              <Ionicons name="trending-up" size={11} color={colors.green} />
-              <Text style={styles.kpiTrendTexto}>+18 este mes</Text>
-            </View>
+            <ThemedText type="label" style={styles.kpiLabel}>
+              Clases
+            </ThemedText>
           </GlassCard>
-
-          <GlassCard style={[styles.kpiCard, styles.kpiAlerta]}>
-            <View style={styles.kpiTop}>
-              <ThemedText type="label" style={[styles.kpiLabel, { color: "#F87171" }]}>
-                ● Stock Bajo
-              </ThemedText>
-              <View style={[styles.kpiIcono, { backgroundColor: `${colors.red}1A`, borderColor: `${colors.red}44` }]}>
-                <Ionicons name="warning" size={14} color={colors.red} />
-              </View>
-            </View>
-            <ThemedText type="title" style={[styles.kpiValor, { color: colors.red }]}>
-              7 <Text style={styles.kpiItems}>items</Text>
+          <GlassCard style={styles.kpiCard}>
+            <ThemedText type="title" style={[styles.kpiValor, { color: colors.blue }]}>
+              {inventarioKpis.marcas}
             </ThemedText>
-            <View style={styles.revisarBtn}>
-              <Text style={styles.revisarTexto}>Revisar lista →</Text>
-            </View>
+            <ThemedText type="label" style={styles.kpiLabel}>
+              Marcas
+            </ThemedText>
+          </GlassCard>
+          <GlassCard style={styles.kpiCard}>
+            <ThemedText type="title" style={[styles.kpiValor, { color: colors.green }]}>
+              {inventarioKpis.productos}
+            </ThemedText>
+            <ThemedText type="label" style={styles.kpiLabel}>
+              Productos
+            </ThemedText>
+          </GlassCard>
+          <GlassCard style={styles.kpiCard}>
+            <ThemedText type="title" style={[styles.kpiValor, { color: colors.cyan }]}>
+              1,240
+            </ThemedText>
+            <ThemedText type="label" style={styles.kpiLabel}>
+              Piezas en stock
+            </ThemedText>
           </GlassCard>
         </View>
 
-        {/* Búsqueda + filtros */}
-        <SearchField placeholder="Buscar producto o código SKU..." />
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filtros}>
-          {categorias.map((c) => {
-            const activo = categoria === c;
-            return (
-              <Pressable key={c} onPress={() => setCategoria(c)} style={[styles.filtro, activo && styles.filtroActivo]}>
-                <Text style={[styles.filtroTexto, activo && styles.filtroTextoActivo]}>{c}</Text>
-              </Pressable>
-            );
-          })}
-        </ScrollView>
+        <SearchField placeholder="Buscar producto, clase o marca..." value={busqueda} onChangeText={setBusqueda} />
 
         {/* Lista */}
         {lista.map((p) => {
-          const cs = colorStock(p.stock);
-          const icono = iconoCategoria[p.categoria] ?? "cube";
+          const cs = colorExistencia(p.existencia);
+          const icono = iconoClase[p.clase] ?? "cube";
           return (
             <GlassCard key={p.id} style={styles.productoRow}>
               <View style={styles.productoIcono}>
@@ -122,18 +113,21 @@ export default function InventarioScreen() {
               </View>
               <View style={styles.productoInfo}>
                 <ThemedText type="mono" style={styles.productoNombre} numberOfLines={1}>
-                  {p.nombre}
+                  {p.producto}
                 </ThemedText>
-                <ThemedText type="body" style={styles.productoSku}>
-                  SKU: {p.sku} · {p.categoria}
+                <ThemedText type="body" style={styles.productoMeta} numberOfLines={1}>
+                  {p.clase} · {p.marca}
+                </ThemedText>
+                <ThemedText type="body" style={styles.productoEstado}>
+                  Estado: {p.estado}
                 </ThemedText>
               </View>
               <View style={styles.productoDer}>
                 <ThemedText type="mono" style={styles.productoPrecio}>
-                  {p.precio}
+                  {p.costoVenta}
                 </ThemedText>
                 <View style={[styles.stockChip, { backgroundColor: cs.bg, borderColor: cs.borde }]}>
-                  <Text style={[styles.stockTexto, { color: cs.text }]}>STOCK: {p.stock}</Text>
+                  <Text style={[styles.stockTexto, { color: cs.text }]}>EXISTENCIA: {p.existencia}</Text>
                 </View>
               </View>
               <Ionicons name="ellipsis-vertical" size={15} color={colors.textSoft} />
@@ -179,33 +173,10 @@ const styles = StyleSheet.create({
     borderWidth: 1, borderColor: colors.border, alignItems: "center", justifyContent: "center",
   },
   scroll: { paddingHorizontal: spacing.lg, paddingBottom: 110, gap: spacing.md },
-  kpiRow: { flexDirection: "row", gap: spacing.md },
-  kpiCard: { flex: 1, gap: 6, padding: 14 },
-  kpiAlerta: { borderColor: `${colors.red}55` },
-  kpiTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
-  kpiLabel: { fontSize: 9 },
-  kpiIcono: { width: 28, height: 28, borderRadius: 9, borderWidth: 1, alignItems: "center", justifyContent: "center" },
-  kpiValor: { fontSize: 30 },
-  kpiItems: { fontSize: 14, color: colors.textSoft, fontWeight: "500" },
-  kpiTrend: {
-    flexDirection: "row", alignItems: "center", gap: 5, alignSelf: "flex-start",
-    backgroundColor: `${colors.green}1A`, borderWidth: 1, borderColor: `${colors.green}44`,
-    borderRadius: radius.pill, paddingVertical: 3, paddingHorizontal: 8,
-  },
-  kpiTrendTexto: { color: colors.green, fontSize: 10, fontWeight: "700" },
-  revisarBtn: {
-    alignSelf: "flex-start", backgroundColor: `${colors.red}22`, borderWidth: 1, borderColor: `${colors.red}55`,
-    borderRadius: radius.pill, paddingVertical: 5, paddingHorizontal: 10,
-  },
-  revisarTexto: { color: "#F87171", fontSize: 11, fontWeight: "700" },
-  filtros: { gap: spacing.sm },
-  filtro: {
-    backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border,
-    borderRadius: radius.pill, paddingVertical: 7, paddingHorizontal: 14,
-  },
-  filtroActivo: { backgroundColor: colors.yellow, borderColor: colors.yellow },
-  filtroTexto: { color: colors.textMuted, fontFamily: fontFamily.bodyBold, fontSize: 12 },
-  filtroTextoActivo: { color: colors.ink },
+  kpiGrid: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm, marginTop: 2 },
+  kpiCard: { width: "48.7%", flexGrow: 1, alignItems: "center", gap: 3, paddingVertical: 14, paddingHorizontal: 10 },
+  kpiValor: { fontSize: 26 },
+  kpiLabel: { fontSize: 9, textAlign: "center" },
   productoRow: { flexDirection: "row", alignItems: "center", gap: spacing.md, paddingVertical: 12, paddingHorizontal: 14 },
   productoIcono: {
     width: 40, height: 40, borderRadius: 12, backgroundColor: colors.bgSoft,
@@ -213,7 +184,8 @@ const styles = StyleSheet.create({
   },
   productoInfo: { flex: 1, gap: 2 },
   productoNombre: { fontSize: 13 },
-  productoSku: { fontSize: 11, color: colors.textSoft },
+  productoMeta: { fontSize: 11, color: colors.textSoft },
+  productoEstado: { fontSize: 10, color: colors.textSoft },
   productoDer: { alignItems: "flex-end", gap: 4 },
   productoPrecio: { color: colors.yellow, fontWeight: "800" },
   stockChip: { borderWidth: 1, borderRadius: radius.pill, paddingVertical: 2, paddingHorizontal: 8 },

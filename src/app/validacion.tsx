@@ -75,9 +75,14 @@ export default function ValidacionScreen() {
         {lista.map((p) => (
           <GlassCard key={p.id} style={styles.pagoCard}>
             <View style={styles.pagoTop}>
-              <ThemedText type="mono" style={styles.pagoMonto}>
-                {p.monto}
-              </ThemedText>
+              <View>
+                <ThemedText type="mono" style={styles.pagoMonto}>
+                  {p.monto}
+                </ThemedText>
+                <ThemedText type="label" style={styles.pagoFactura}>
+                  Factura {p.factura}
+                </ThemedText>
+              </View>
               {p.estado === "Pendiente" ? (
                 <View style={styles.accionesRow}>
                   <Pressable style={[styles.accionCircular, { borderColor: `${colors.green}66`, backgroundColor: `${colors.green}1A` }]} onPress={() => cambiarEstado(p.id, "Validado")}>
@@ -99,8 +104,8 @@ export default function ValidacionScreen() {
                 <ThemedText type="mono" style={styles.pagoCliente}>
                   {p.cliente}
                 </ThemedText>
-                <ThemedText type="body" style={styles.pagoOrden}>
-                  Orden {p.orden} · {p.id}
+                <ThemedText type="body" style={styles.pagoOrden} numberOfLines={1}>
+                  Ref: {p.referencia} · {p.id}
                 </ThemedText>
               </View>
               <View style={styles.metodoChip}>
@@ -114,7 +119,7 @@ export default function ValidacionScreen() {
               <View style={styles.fechaRow}>
                 <Ionicons name="time" size={11} color={colors.textSoft} />
                 <ThemedText type="body" style={styles.fecha}>
-                  {p.fecha} · {p.hora}
+                  {p.fecha}
                 </ThemedText>
               </View>
             </View>
@@ -159,6 +164,7 @@ const styles = StyleSheet.create({
   pagoInfo: { flex: 1, gap: 2 },
   pagoCliente: { fontSize: 13 },
   pagoOrden: { fontSize: 10, color: colors.textSoft },
+  pagoFactura: { fontSize: 9, color: colors.textSoft },
   metodoChip: {
     flexDirection: "row", alignItems: "center", gap: 4,
     backgroundColor: colors.surfaceStrong, borderRadius: 999, paddingVertical: 4, paddingHorizontal: 9,

@@ -18,6 +18,10 @@ export default function OrdenDetalleScreen() {
   const base = detalleOrden[clave] ?? detalleOrden["OS-0142"];
   const ordenDeLista = ordenes.find((o) => o.id === clave);
   const data = ordenDeLista ? { ...base, orden: ordenDeLista } : base;
+  const totalRepuestos = data.repuestos.reduce(
+    (acc, r) => acc + parseFloat(r.precio.replace(/[$,]/g, "")) * r.cantidad,
+    0,
+  );
 
   return (
     <SafeAreaView style={styles.safe} edges={["top", "bottom"]}>
@@ -31,7 +35,7 @@ export default function OrdenDetalleScreen() {
             Orden #{data.orden.id}
           </ThemedText>
           <ThemedText type="label" style={styles.headerSub}>
-            {data.orden.nota ?? "Taller Central"}
+            Taller Central
           </ThemedText>
         </View>
         <StatusChip estado={data.orden.estado} />
@@ -238,7 +242,7 @@ export default function OrdenDetalleScreen() {
             Total Estimado
           </ThemedText>
           <ThemedText type="title" style={styles.footerTotal}>
-            {data.orden.total}
+            {totalRepuestos.toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             <ThemedText type="label" style={styles.footerMxn}>
               {" "}
               MXN
@@ -246,7 +250,9 @@ export default function OrdenDetalleScreen() {
           </ThemedText>
         </View>
         <Pressable style={styles.actualizarBtn}>
-          <Text style={styles.actualizarTexto}>ACTUALIZAR ESTADO</Text>
+          <Text style={styles.actualizarTexto} numberOfLines={1}>
+            ACTUALIZAR ESTADO
+          </Text>
           <Ionicons name="arrow-forward" size={15} color={colors.ink} />
         </Pressable>
       </View>
@@ -341,16 +347,16 @@ const styles = StyleSheet.create({
   pie: { alignItems: "center", paddingBottom: spacing.lg },
   pieVersion: { fontSize: 11, color: colors.textSoft },
   footer: {
-    flexDirection: "row", justifyContent: "space-between", alignItems: "center",
+    flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 8,
     backgroundColor: colors.bgSoft, borderTopWidth: 1, borderTopColor: colors.border,
-    paddingHorizontal: spacing.lg, paddingVertical: spacing.md,
+    paddingHorizontal: spacing.md, paddingVertical: spacing.md,
   },
   footerLabel: { fontSize: 9 },
-  footerTotal: { color: colors.yellow, fontSize: 24 },
+  footerTotal: { color: colors.yellow, fontSize: 20 },
   footerMxn: { fontSize: 9, color: colors.textSoft },
   actualizarBtn: {
     flexDirection: "row", alignItems: "center", gap: 8,
-    backgroundColor: colors.yellow, borderRadius: radius.md, paddingVertical: 14, paddingHorizontal: 18,
+    backgroundColor: colors.yellow, borderRadius: radius.md, paddingVertical: 14, paddingHorizontal: 12,
   },
-  actualizarTexto: { fontFamily: fontFamily.bodyExtraBold, color: colors.ink, fontSize: 13 },
+  actualizarTexto: { fontFamily: fontFamily.bodyExtraBold, color: colors.ink, fontSize: 12 },
 });
