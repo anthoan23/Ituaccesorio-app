@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 import { Avatar } from "@/components/avatar";
+import { SwipeTabs } from "@/components/swipe-tabs";
 import { GlassCard } from "@/components/glass-card";
 import { KpiCard } from "@/components/kpi-card";
 import { StatusChip } from "@/components/status-chip";
@@ -23,6 +24,7 @@ export default function InicioScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
+      <SwipeTabs onLeft={() => router.navigate("/taller" as never)}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
@@ -133,6 +135,7 @@ export default function InicioScreen() {
           </ThemedText>
         </View>
       </ScrollView>
+      </SwipeTabs>
     </SafeAreaView>
   );
 }

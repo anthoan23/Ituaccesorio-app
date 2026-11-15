@@ -1,29 +1,23 @@
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
-import { colors, fontFamily } from "@/constants/theme";
+import { BottomNav } from "@/components/bottom-nav";
+import { colors } from "@/constants/theme";
 
+/**
+ * Navegador de pestañas (5). Orden: Inicio · Taller · Más · Ventas · Empleados
+ * La barra inferior es el componente BottomNav (custom) montado una sola vez,
+ * con animaciones al seleccionar. Además, las pantallas permiten cambiar de
+ * pestaña deslizando hacia los lados (SwipeTabs).
+ */
 export default function TabsLayout() {
   return (
     <Tabs
-      screenOptions={{
-        headerShown: false,
-        sceneStyle: { backgroundColor: colors.bg },
-        tabBarActiveTintColor: colors.yellow,
-        tabBarInactiveTintColor: colors.textSoft,
-        tabBarStyle: {
-          backgroundColor: colors.bg,
-          borderTopColor: colors.border,
-          borderTopWidth: 1,
-          height: 64,
-          paddingTop: 6,
-          paddingBottom: 8,
-        },
-        tabBarLabelStyle: { fontFamily: fontFamily.bodyMedium, fontSize: 11 },
-      }}
+      screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: colors.bg } }}
+      tabBar={(props) => <BottomNav {...props} />}
     >
       <Tabs.Screen
-        name="index"
+        name="inicio"
         options={{
           title: "Inicio",
           tabBarIcon: ({ color }) => <Ionicons name="home" size={22} color={color as string} />,
@@ -37,6 +31,13 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
+        name="mas"
+        options={{
+          title: "Más",
+          tabBarIcon: ({ color }) => <Ionicons name="apps" size={22} color={color as string} />,
+        }}
+      />
+      <Tabs.Screen
         name="ventas"
         options={{
           title: "Ventas",
@@ -44,10 +45,10 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="mas"
+        name="empleados"
         options={{
-          title: "Más",
-          tabBarIcon: ({ color }) => <Ionicons name="apps" size={22} color={color as string} />,
+          title: "Empleados",
+          tabBarIcon: ({ color }) => <Ionicons name="people" size={22} color={color as string} />,
         }}
       />
     </Tabs>

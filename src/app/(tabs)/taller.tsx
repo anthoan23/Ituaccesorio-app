@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
+import { SwipeTabs } from "@/components/swipe-tabs";
 import { Ionicons } from "@expo/vector-icons";
 
 import { Avatar } from "@/components/avatar";
@@ -57,6 +58,7 @@ export default function TallerScreen() {
       </View>
 
       {/* Lista */}
+      <SwipeTabs onRight={() => router.navigate("/inicio" as never)} onLeft={() => router.navigate("/mas" as never)}>
       <ScrollView contentContainerStyle={styles.lista} showsVerticalScrollIndicator={false}>
         {ordenes
           .filter((o) =>
@@ -108,6 +110,7 @@ export default function TallerScreen() {
           </ThemedText>
         </View>
       </ScrollView>
+      </SwipeTabs>
 
       <Fab />
     </SafeAreaView>

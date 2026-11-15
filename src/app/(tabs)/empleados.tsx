@@ -1,16 +1,17 @@
 import { useMemo, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
+import { SwipeTabs } from "@/components/swipe-tabs";
 import { Ionicons } from "@expo/vector-icons";
 
 import { Fab } from "@/components/fab";
 import { GlassCard } from "@/components/glass-card";
 import { ProgressBar } from "@/components/progress-bar";
-import { ScreenHeader } from "@/components/screen-header";
 import { SearchField } from "@/components/search-input";
 import { ThemedText } from "@/components/themed-text";
 import { empleados } from "@/data/mock";
-import { colors } from "@/constants/theme";
+import { colors, spacing } from "@/constants/theme";
 
 /** Card de la web: Gráfico de Cargos — distribución por cargo */
 const distribucionCargos = [
@@ -20,6 +21,7 @@ const distribucionCargos = [
 ];
 
 export default function EmpleadosScreen() {
+  const router = useRouter();
   const [busqueda, setBusqueda] = useState("");
 
   const lista = useMemo(
@@ -32,16 +34,22 @@ export default function EmpleadosScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
-      <ScreenHeader
-        titulo="Empleados"
-        label="Catálogo de empleados"
-        right={
-          <View style={styles.agregarBtn}>
-            <Ionicons name="add" size={19} color={colors.yellow} />
+      <View style={styles.header}>
+        <View style={styles.headerIzq}>
+          <View style={styles.headerTitulo}>
+            <ThemedText type="title" style={styles.titulo}>
+              Empleados
+            </ThemedText>
+            <View style={styles.punto} />
           </View>
-        }
-      />
+          <ThemedText type="label">Catálogo de empleados</ThemedText>
+        </View>
+        <View style={styles.agregarBtn}>
+          <Ionicons name="add" size={19} color={colors.yellow} />
+        </View>
+      </View>
 
+      <SwipeTabs onRight={() => router.navigate("/ventas" as never)}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* KPI de la web: Empleados */}
         <GlassCard style={styles.kpiCard}>
@@ -110,6 +118,7 @@ export default function EmpleadosScreen() {
           </ThemedText>
         </View>
       </ScrollView>
+      </SwipeTabs>
 
       <Fab />
     </SafeAreaView>
@@ -118,6 +127,14 @@ export default function EmpleadosScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
+  header: {
+    flexDirection: "row", alignItems: "center", justifyContent: "space-between",
+    paddingHorizontal: spacing.lg, paddingTop: spacing.sm, paddingBottom: spacing.md,
+  },
+  headerIzq: { gap: 3 },
+  headerTitulo: { flexDirection: "row", alignItems: "center", gap: 6 },
+  titulo: { fontSize: 26 },
+  punto: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.yellow },
   agregarBtn: {
     width: 40, height: 40, borderRadius: 20, backgroundColor: colors.surface,
     borderWidth: 1, borderColor: colors.border, alignItems: "center", justifyContent: "center",

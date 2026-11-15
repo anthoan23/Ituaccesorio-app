@@ -19,7 +19,7 @@ export default function LoginScreen() {
   const iniciarSesion = () => {
     if (usuario === ADMIN_USER && password === ADMIN_PASSWORD) {
       setError(false);
-      router.replace("/(tabs)");
+      router.replace("/inicio");
     } else {
       setError(true);
     }

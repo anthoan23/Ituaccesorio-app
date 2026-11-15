@@ -1,6 +1,7 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
+import { SwipeTabs } from "@/components/swipe-tabs";
 import { Ionicons } from "@expo/vector-icons";
 
 import { Avatar } from "@/components/avatar";
@@ -33,6 +34,7 @@ export default function MasScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
+      <SwipeTabs onRight={() => router.navigate("/taller" as never)} onLeft={() => router.navigate("/ventas" as never)}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Perfil */}
         <Pressable style={styles.perfilHeader} onPress={() => router.push("/perfil" as never)}>
@@ -155,6 +157,7 @@ export default function MasScreen() {
           </ThemedText>
         </View>
       </ScrollView>
+      </SwipeTabs>
     </SafeAreaView>
   );
 }

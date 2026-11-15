@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
+import { SwipeTabs } from "@/components/swipe-tabs";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -78,6 +79,7 @@ export default function VentasScreen() {
         })}
       </ScrollView>
 
+      <SwipeTabs onRight={() => router.navigate("/mas" as never)} onLeft={() => router.navigate("/empleados" as never)}>
       <ScrollView contentContainerStyle={styles.grid} showsVerticalScrollIndicator={false}>
         {lista.map((p) => (
           <GlassCard key={p.id} style={styles.producto}>
@@ -113,6 +115,7 @@ export default function VentasScreen() {
           </GlassCard>
         ))}
       </ScrollView>
+      </SwipeTabs>
 
       {/* Barra de carrito */}
       <View style={styles.barraCarro}>
